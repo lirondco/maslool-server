@@ -6,7 +6,7 @@ CREATE TABLE users (
     email TEXT NOT NULL,
     admin BOOLEAN NOT NULL DEFAULT false,
     banned BOOLEAN NOT NULL DEFAULT false,
-    banned_by: TEXT
+    banned_by TEXT
 );
 
 ALTER TABLE pending
