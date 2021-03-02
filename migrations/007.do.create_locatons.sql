@@ -8,3 +8,6 @@ CREATE TABLE locations (
     state TEXT NOT NULL,
     zip INTEGER NOT NULL
 );
+
+ALTER TABLE trails
+    DROP COLUMN location;
