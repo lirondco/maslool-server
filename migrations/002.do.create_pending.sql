@@ -4,5 +4,5 @@ CREATE TABLE pending (
     location TEXT NOT NULL,
     website TEXT NOT NULL,
     description TEXT NOT NULL,
-    safety TEXT,
+    safety TEXT
 );
