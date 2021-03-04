@@ -1,53 +1,39 @@
-const AUTHSERVICE = require('../auth/auth-service');
+const AUTHSERVICE = require("../auth/auth-service");
+const ERROR = 'Unauthorised request'
 
 function requireAuth(req, res, next) {
-    const ERROR = 'Unauthorised request'
     const AUTHTOKEN = req.get('Authorization') || ''
-
     let bearerToken
+
     if (AUTHTOKEN.toLowerCase().startsWith('bearer ')) {
-        bearerToken = AUTHTOKEN.slice(7, AUTHTOKEN.length)
+        bearerToken = authToken.slice(7, authToken.length)
     } else {
         return res.status(401).json({
-            error: ERROR
+            error: 'Missing bearer token'
         })
     }
 
-    const [tokenUserName, tokenPassword] = AUTHSERVICE.parseBasicToken(bearerToken)
+    try {
+        const PAYLOAD = AUTHSERVICE.verifyJwt(bearerToken)
 
-    if (!tokenUserName || !tokenPassword) {
-        return res.status(401).json({
-            error: ERROR
-        })
-    }
-
-    AUTHSERVICE.getUserWithUserName(
-        req.app.get('db'),
-        tokenUserName
-    )
+        AUTHSERVICE.getUserWithUserName(
+            req.app.get('db'),
+            payload.sub,
+        )
         .then(user => {
             if (!user) return res.status(401).json({
                 error: ERROR
             })
-
-        return AUTHSERVICE.comparePasswords(tokenPassword, user.password)
-            .then(hasMatch => {
-                if(hasMatch) {
-                    req.user = user
-                    next()
-                } else {
-                    return res.status(401).json({
-                        error: ERROR
-                    })
-                }
-            })
-
         })
         .catch(err => {
             console.error(err)
             next(err)
         })
-    
+    } catch (error) {
+        res.status(401).json({
+            error: ERROR
+        })
+    }
 }
 
 function requireAdmin(req, res, next) {
@@ -83,3 +69,5 @@ function requireAdmin(req, res, next) {
      checkBanned,
      requireOwner
  }
+
+ 

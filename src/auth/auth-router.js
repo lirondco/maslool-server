@@ -1,11 +1,12 @@
 const EXPRESS = require('express');
 const AUTHSERVICE = require('./auth-service');
+const { checkBanned, requireAuth } = require('../middleware/jwt-auth')
 
 const AUTHROUTER = EXPRESS.Router();
 const JSONBODYPARSER = EXPRESS.json();
 
 AUTHROUTER
- .post('/login', JSONBODYPARSER, (req, res, next) => {
+ .post('/login', checkBanned, JSONBODYPARSER, (req, res, next) => {
      const { username, password } = req.body;
      const LOGINUSER = { username, password };
      
@@ -42,7 +43,12 @@ AUTHROUTER
         .catch(next)
  })
 
-AUTHROUTER.post('/refresh') //finish this after middleware is done
-
+AUTHROUTER.post('/refresh', requireAuth, (req, res) => {
+    const SUB = req.user.username
+    const PAYLOAD = { user_id: req.user.id }
+    res.send({
+        authToken: AUTHSERVICE.createJwt(SUB, PAYLOAD)
+    })
+})
 
  module.exports = AUTHROUTER;
