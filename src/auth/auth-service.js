@@ -13,15 +13,19 @@ const AUTHSERVICE = {
         return BCRYPT.compare(password, hash)
     },
 
+    hashPassword(password) {
+        return BCRYPT.hash(password, 12)
+    },
+
     createJwt(subject, payload) {
-        return JWT.sign(payload, config.JWT_SECRET, {
+        return JWT.sign(payload, CONFIG.JWT_SECRET, {
             subject,
             algorithm: 'HS256',
         })
     },
 
     verifyJwt(token) {
-        return JWT.verify(token, config.JWT_SECRET, {
+        return JWT.verify(token, CONFIG.JWT_SECRET, {
             algorithms: ['HS256'],
         })
     },

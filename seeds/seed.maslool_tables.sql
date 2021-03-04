@@ -313,3 +313,5 @@ VALUES
 
 SELECT setval('user_id_seq', (SELECT MAX(id) from "users"));
 SELECT setval('trail_id_seq', (SELECT MAX(id) from "trails"));
+
+COMMIT;

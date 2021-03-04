@@ -1,12 +1,14 @@
 const EXPRESS = require('express');
 const AUTHSERVICE = require('./auth-service');
-const { checkBanned, requireAuth } = require('../middleware/jwt-auth')
+const { requireAuth } = require('../middleware/jwt-auth')
+const { checkBanned } = require('../middleware/basic-auth')
 
 const AUTHROUTER = EXPRESS.Router();
 const JSONBODYPARSER = EXPRESS.json();
 
 AUTHROUTER
- .post('/login', checkBanned, JSONBODYPARSER, (req, res, next) => {
+    .route('/login')
+    .post(JSONBODYPARSER, checkBanned, (req, res, next) => {
      const { username, password } = req.body;
      const LOGINUSER = { username, password };
      

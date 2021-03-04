@@ -18,7 +18,7 @@ function requireAuth(req, res, next) {
 
         AUTHSERVICE.getUserWithUserName(
             req.app.get('db'),
-            payload.sub,
+            PAYLOAD.sub,
         )
         .then(user => {
             if (!user) return res.status(401).json({
@@ -30,7 +30,7 @@ function requireAuth(req, res, next) {
             next(err)
         })
     } catch (error) {
-        res.status(401).json({
+        return res.status(401).json({
             error: ERROR
         })
     }
@@ -38,29 +38,35 @@ function requireAuth(req, res, next) {
 
 function requireAdmin(req, res, next) {
     if (req.user.admin === false) {
-        return res.status(401).json({
-            error: ERROR
-        })
-    }
-    return next()
+        return res.status(401).json({ error: ERROR })
+      }
+    
+      return next()
  }
 
  function checkBanned(req, res, next) {
-     if (req.user.banned === true) {
-         return res.status(401).json({
-             error: ERROR
-         })
-     }
-     return next()
+    AUTHSERVICE.getUserWithUserName(
+        req.app.get('db'),
+        req.body.username
+    )
+    .then(user => {
+        if(user.banned === true) return res.status(401).json({
+            error: 'User is banned'
+        })
+    })
+    .catch(err => {
+        console.error(err)
+        next(err)
+    })
+    return next()
  }
 
  function requireOwner(req, res, next) {
-     if (req.user.username !== 'liron') {
-         return res.status(401).json({
-             error: ERROR
-         })
-     }
-     return next()
+    if (req.user.username !== 'liron') {
+        return res.status(401).json({ error: ERROR })
+      }
+    
+      return next()
  }
 
  module.exports = {
