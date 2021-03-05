@@ -1,4 +1,4 @@
-const AUTHSERVICE = require("../auth/auth-service");
+const AuthService = require("../auth/auth-service");
 const ERROR = 'Unauthorised request'
 
 function requireAuth(req, res, next) {
@@ -6,7 +6,7 @@ function requireAuth(req, res, next) {
     let bearerToken
 
     if (AUTHTOKEN.toLowerCase().startsWith('bearer ')) {
-        bearerToken = authToken.slice(7, authToken.length)
+        bearerToken = AUTHTOKEN.slice(7, AUTHTOKEN.length)
     } else {
         return res.status(401).json({
             error: 'Missing bearer token'
@@ -14,9 +14,9 @@ function requireAuth(req, res, next) {
     }
 
     try {
-        const PAYLOAD = AUTHSERVICE.verifyJwt(bearerToken)
+        const PAYLOAD = AuthService.verifyJwt(bearerToken)
 
-        AUTHSERVICE.getUserWithUserName(
+        AuthService.getUserWithUserName(
             req.app.get('db'),
             PAYLOAD.sub,
         )
@@ -24,6 +24,9 @@ function requireAuth(req, res, next) {
             if (!user) return res.status(401).json({
                 error: ERROR
             })
+
+            req.user = user
+            next()
         })
         .catch(err => {
             console.error(err)
@@ -41,7 +44,7 @@ function requireAdmin(req, res, next) {
         return res.status(401).json({ error: ERROR })
       }
     
-      return next()
+    return next()
  }
 
  function checkBanned(req, res, next) {

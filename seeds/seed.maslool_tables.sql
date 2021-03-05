@@ -310,7 +310,8 @@ VALUES
         1
     );
 
-
+CREATE SEQUENCE user_id_seq;
+CREATE SEQUENCE trail_id_seq;
 SELECT setval('user_id_seq', (SELECT MAX(id) from "users"));
 SELECT setval('trail_id_seq', (SELECT MAX(id) from "trails"));
 
