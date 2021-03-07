@@ -86,6 +86,7 @@ USERSROUTER
 USERSROUTER
     .route('/:user_id')
     .all(requireAuth)
+    .all(requireAdmin)
     .all((req, res, next) => {
         USERSSERVICE.getById(
             req.app.get('db'),
@@ -103,10 +104,6 @@ USERSROUTER
             .catch(next)
     })
     .get((req, res) => {
-        if (res.user.id !== req.user.id)
-            return res.status(400).json({
-                error: 'Unauthorised access'
-            })
 
         res.json(serialiseUser(res.user))
     })
