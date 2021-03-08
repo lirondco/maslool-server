@@ -36,6 +36,41 @@ const COMMENTSSERVICE = {
             .first()
     },
 
+    getFlagged(db) {
+        return db
+            .from('comments AS comm')
+            .select(
+                'comm.id',
+                'comm.content',
+                'comm.last_modified',
+                'comm.flagged',
+                'comm.flagged_by',
+                'comm.trail_id',
+                db.raw(
+                    `json_strip_nulls(
+                        row_to_json(
+                            (SELECT tmp FROM (
+                                SELECT
+                                    usr.id,
+                                    usr.username,
+                                    usr.join_date,
+                                    usr.admin,
+                                    usr.banned,
+                                    usr.banned_by
+                            ) tmp)
+                        )
+                    ) AS "user"`
+                )
+            )
+            .leftJoin(
+                'users AS usr',
+                'comm.user_id',
+                'usr.id',
+            )
+            .where('comm.flagged', true)
+            .groupBy('comm.id', 'usr.id')
+    },
+
     insertComment(db, newComment) {
         return db
             .insert(newComment)

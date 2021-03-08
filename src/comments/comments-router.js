@@ -40,6 +40,17 @@ COMMENTSROUTER
     })
 
 COMMENTSROUTER
+    .route('/flagged')
+    .all(requireAuth)
+    .get(requireAdmin, (req, res, next) => {
+        COMMENTSSERVICE.getFlagged(req.app.get('db'))
+            .then(comments => {
+                res.json(comments.map(COMMENTSSERVICE.serialiseComment))
+            })
+            .catch(next)
+    })
+
+COMMENTSROUTER
     .route('/:comment_id')
     .all(requireAuth)
     .all((req, res, next) => {
