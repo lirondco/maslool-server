@@ -7,6 +7,7 @@ const { NODE_ENV } = require('./config')
 const AUTHROUTER = require('./auth/auth-router')
 const USERSROUTER = require('./users/users-router')
 const TRAILSROUTER = require('./trails/trails-router')
+const COMMENTSROUTER = require('./comments/comments-router')
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(cors())
 app.use('/api/auth', AUTHROUTER)
 app.use('/api/users', USERSROUTER)
 app.use('/api/trails', TRAILSROUTER)
+app.use('/api/comments', COMMENTSROUTER)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')
