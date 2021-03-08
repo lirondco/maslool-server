@@ -2,7 +2,6 @@ const EXPRESS = require('express')
 const TRAILSSERVICE = require('./trails-service')
 const { requireAuth, requireAdmin } = require('../middleware/jwt-auth')
 const PATH = require('path')
-const CONFIG = require('../config')
 
 const TRAILSROUTER = EXPRESS.Router();
 const JSONBODYPARSER = EXPRESS.json();
@@ -76,24 +75,24 @@ TRAILSROUTER
         res.json(TRAILSSERVICE.serialiseTrail(res.trail))
     })
     .patch(JSONBODYPARSER, requireAdmin, (req, res, next) => {
-        const { name, website, description, safety=null, difficulty, location } = req.body
+        const { name, website, description, safety = null, difficulty, location } = req.body
         const TRAILTOUPDATE = { name, website, description, safety, difficulty }
 
         const PRESENTVALUES = Object.values(TRAILTOUPDATE).filter(Boolean)
-        if(req.body.location) {
-        const LOCATIONVALUES = Object.values(req.body.location).filter(Boolean)
+        if (req.body.location) {
+            const LOCATIONVALUES = Object.values(req.body.location).filter(Boolean)
 
-        if (LOCATIONVALUES.length === 0) {
-            return res.status(400).json({
-                error: `Location body cannot be empty and must contain at least one of address_line, city, region, postal_code`
-            })
-        }
+            if (LOCATIONVALUES.length === 0) {
+                return res.status(400).json({
+                    error: `Location body cannot be empty and must contain at least one of address_line, city, region, postal_code`
+                })
+            }
             TRAILSSERVICE.updateTrailLocation(
                 req.app.get('db'),
                 req.params.trail_id,
                 req.body.location
             )
-            .then(numRowsAffected => console.log(numRowsAffected))
+                .then(numRowsAffected => console.log(numRowsAffected))
         }
         if (PRESENTVALUES.length === 0 && !req.body.location)
             return res.status(400).json({
