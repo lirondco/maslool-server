@@ -1,0 +1,1 @@
+const XSS = require('xss')

@@ -1,4 +1,4 @@
-const XSS = require('XSS');
+const XSS = require('xss')
 
 const TRAILSSERVICE = {
     getAllTrails(db) {
