@@ -1,17 +1,20 @@
 const EXPRESS = require('express')
 const PATH = require('path')
 const { requireAuth, requireAdmin } = require('../middleware/jwt-auth')
+const TRAILSSERVICE = require('../trails/trails-service')
 const COMMENTSSERVICE = require('./comments-service')
 
 const COMMENTSROUTER = EXPRESS.Router()
 const JSONBODYPARSER = EXPRESS.json()
 
 COMMENTSROUTER
-    .route('/')
+    .route('/:trail_id')
     .all(requireAuth)
-    .post(JSONBODYPARSER, (req, res, next) => {
+    .post(JSONBODYPARSER, checkTrailExists, (req, res, next) => {
         const { trail_id, content, user_id } = req.body
         const NEWCOMMENT = { trail_id, content, user_id }
+
+        NEWCOMMENT.trail_id = req.params.trail_id
 
         for (const [key, value] of Object.entries(NEWCOMMENT))
             if (value === null)
@@ -189,3 +192,22 @@ COMMENTSROUTER
     })
 
 module.exports = COMMENTSROUTER
+
+async function checkTrailExists(req, res, next) {
+    try {
+        const TRAIL = await TRAILSSERVICE.getById(
+            req.app.get('db'),
+            req.params.trail_id
+        )
+
+        if (!TRAIL)
+            return res.status(404).json({
+                error: `Trail doesn't exist`
+            })
+
+        res.trail = TRAIL
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
