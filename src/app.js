@@ -8,6 +8,7 @@ const AUTHROUTER = require('./auth/auth-router')
 const USERSROUTER = require('./users/users-router')
 const TRAILSROUTER = require('./trails/trails-router')
 const COMMENTSROUTER = require('./comments/comments-router')
+const RATINGSROUTER = require('./ratings/ratings-router')
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use('/api/auth', AUTHROUTER)
 app.use('/api/users', USERSROUTER)
 app.use('/api/trails', TRAILSROUTER)
 app.use('/api/comments', COMMENTSROUTER)
+app.use('/api/ratings', RATINGSROUTER)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')
