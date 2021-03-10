@@ -31,7 +31,7 @@ const TRAILSSERVICE = {
                         )
                     ) AS "location"`
                 ),
-            ) 
+            )
             .leftJoin(
                 'comments AS comm',
                 'trail.id',

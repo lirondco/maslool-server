@@ -9,3 +9,4 @@ CREATE TABLE comments (
     flagged BOOLEAN DEFAULT false,
     flagged_by TEXT
 );
+

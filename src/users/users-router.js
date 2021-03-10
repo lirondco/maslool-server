@@ -57,36 +57,36 @@ USERSROUTER
                     req.app.get('db'),
                     email
                 )
-                .then(hasUserWithEmail => {
-                    if (hasUserWithEmail)
-                        return res.status(400).json({
-                            error: `Email already taken`
-                        })
+                    .then(hasUserWithEmail => {
+                        if (hasUserWithEmail)
+                            return res.status(400).json({
+                                error: `Email already taken`
+                            })
                         return USERSSERVICE.hashPassword(password)
-                        .then(hashedPassword => {
-                            const NEWUSER = {
-                                username,
-                                password: hashedPassword,
-                                email,
-                                join_date: 'now()',
-                                banned: false,
-                                banned_by: null,
-                                admin: false
-                            }
-            
-                            return USERSSERVICE.insertUser(
-                                req.app.get('db'),
-                                NEWUSER
-                            )
-                            .then(user => {
-                                res
-                                    .status(201)
-                                    .location(PATH.posix.join(req.originalUrl, `/${user.id}`))
-                                    .json(serialiseUser(user))
+                            .then(hashedPassword => {
+                                const NEWUSER = {
+                                    username,
+                                    password: hashedPassword,
+                                    email,
+                                    join_date: 'now()',
+                                    banned: false,
+                                    banned_by: null,
+                                    admin: false
+                                }
 
-                })
+                                return USERSSERVICE.insertUser(
+                                    req.app.get('db'),
+                                    NEWUSER
+                                )
+                                    .then(user => {
+                                        res
+                                            .status(201)
+                                            .location(PATH.posix.join(req.originalUrl, `/${user.id}`))
+                                            .json(serialiseUser(user))
+
+                                    })
+                            })
                     })
-                })
             })
             .catch(next)
     })
@@ -217,16 +217,16 @@ USERSROUTER
             req.app.get('db'),
             req.params.user_id
         )
-        .then(user => {
-            if (!user)
-                return res.status(404).json({
-                    error: `User doesn't exist`
-                })
+            .then(user => {
+                if (!user)
+                    return res.status(404).json({
+                        error: `User doesn't exist`
+                    })
                 res.user = user
                 next()
                 return null
-        })
-        .catch(next)
+            })
+            .catch(next)
     })
     .patch(JSONPARSER, (req, res, next) => {
         const { admin } = req.body
