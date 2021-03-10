@@ -29,6 +29,17 @@ describe('Protected endpoints', function() {
 
     afterEach('cleanup', () => helpers.cleanTables(db))
 
+    beforeEach('insert trails', () => 
+        helpers.seedTrailsTables(
+            db,
+            testUsers,
+            testTrails,
+            testLocations,
+            testComments,
+            testRatings
+        )
+    )
+
     const protectedEndpoints = [
         {
             name: 'GET /api/trails',

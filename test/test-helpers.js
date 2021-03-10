@@ -70,7 +70,7 @@ function makeTrailsArray() {
             rating: 0
         },
         {
-            id: 1,
+            id: 3,
             name: 'Test Trail 3',
             date_published: new Date('2029-01-22T16:28:32.615Z'),
             website: 'www.trail3.net',
@@ -177,7 +177,7 @@ function makeCommentsArray(users, trails) {
             flagged_by: null,
         },
         {
-            id: 3,
+            id: 8,
             trail_id: trails[2].id,
             user_id: users[2].id,
             content: 'Third test comment!',

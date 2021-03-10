@@ -115,7 +115,7 @@ describe('Users Endpoints', function() {
                   .expect(400, { error: `Password must not start or end with empty spaces` })
               })
 
-              it.only(`responds 400 'Username already taken' when username isn't unique`, () => {
+              it(`responds 400 'Username already taken' when username isn't unique`, () => {
                 const duplicateUser = {
                   username: testUser.username,
                   password: '11AAaa!!',
@@ -127,5 +127,6 @@ describe('Users Endpoints', function() {
                   .expect(400, { error: `Username already taken` })
             })
         })
+
     })
 })
