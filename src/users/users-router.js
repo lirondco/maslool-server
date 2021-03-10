@@ -53,28 +53,38 @@ USERSROUTER
                     return res.status(400).json({
                         error: `Username already taken`
                     })
+                return USERSSERVICE.hasUserWithEmail(
+                    req.app.get('db'),
+                    email
+                )
+                .then(hasUserWithEmail => {
+                    if (hasUserWithEmail)
+                        return res.status(400).json({
+                            error: `Email already taken`
+                        })
+                        return USERSSERVICE.hashPassword(password)
+                        .then(hashedPassword => {
+                            const NEWUSER = {
+                                username,
+                                password: hashedPassword,
+                                email,
+                                join_date: 'now()',
+                                banned: false,
+                                banned_by: null,
+                                admin: false
+                            }
+            
+                            return USERSSERVICE.insertUser(
+                                req.app.get('db'),
+                                NEWUSER
+                            )
+                            .then(user => {
+                                res
+                                    .status(201)
+                                    .location(PATH.posix.join(req.originalUrl, `/${user.id}`))
+                                    .json(serialiseUser(user))
 
-                return USERSSERVICE.hashPassword(password)
-                .then(hashedPassword => {
-                    const NEWUSER = {
-                        username,
-                        password: hashedPassword,
-                        email,
-                        join_date: 'now()',
-                        banned: false,
-                        banned_by: null,
-                        admin: false
-                    }
-    
-                    return USERSSERVICE.insertUser(
-                        req.app.get('db'),
-                        NEWUSER
-                    )
-                    .then(user => {
-                        res
-                            .status(201)
-                            .location(PATH.posix.join(req.originalUrl, `/${user.id}`))
-                            .json(serialiseUser(user))
+                })
                     })
                 })
             })
