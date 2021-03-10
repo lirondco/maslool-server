@@ -250,7 +250,7 @@ function makeRatingsArray(users, trails) {
         {
             id: 4,
             trail_id: trails[1].id,
-            user_id: users[4].id,
+            user_id: users[3].id,
             rating: 5,
             date_modified: new Date('2029-01-22T16:28:32.615Z'),
         },
@@ -436,9 +436,9 @@ function makeMaliciousTrail() {
 }
 
 function makeTrailsFixtures() {
-    const testUsers = makeUsersArray(),
-    const testTrails = makeTrailsArray(),
-    const testLocations = makeLocationsArray(testTrails),
+    const testUsers = makeUsersArray()
+    const testTrails = makeTrailsArray()
+    const testLocations = makeLocationsArray(testTrails)
     const testComments = makeCommentsArray(testUsers, testTrails)
     const testRatings = makeRatingsArray(testUsers, testTrails)
     const testPending = makePendingArray(testUsers)
