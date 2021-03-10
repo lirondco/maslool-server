@@ -2,7 +2,6 @@ const PATH = require('path')
 const EXPRESS = require('express')
 const XSS = require('xss')
 const USERSSERVICE = require('./users-service')
-const AUTHSERVICE = require('../auth/auth-service')
 const { requireAdmin, requireAuth, requireOwner } = require('../middleware/jwt-auth')
 
 const USERSROUTER = EXPRESS.Router()
@@ -55,29 +54,29 @@ USERSROUTER
                         error: `Username already taken`
                     })
 
-                return AUTHSERVICE.hashPassword(password)
-            })
-            .then(hashedPassword => {
-                const NEWUSER = {
-                    username,
-                    password: hashedPassword,
-                    email,
-                    join_date: 'now()',
-                    banned: false,
-                    banned_by: null,
-                    admin: false
-                }
-
-                return USERSSERVICE.insertUser(
-                    req.app.get('db'),
-                    NEWUSER
-                )
+                return USERSSERVICE.hashPassword(password)
+                .then(hashedPassword => {
+                    const NEWUSER = {
+                        username,
+                        password: hashedPassword,
+                        email,
+                        join_date: 'now()',
+                        banned: false,
+                        banned_by: null,
+                        admin: false
+                    }
+    
+                    return USERSSERVICE.insertUser(
+                        req.app.get('db'),
+                        NEWUSER
+                    )
                     .then(user => {
                         res
                             .status(201)
                             .location(PATH.posix.join(req.originalUrl, `/${user.id}`))
                             .json(serialiseUser(user))
                     })
+                })
             })
             .catch(next)
     })
@@ -104,7 +103,6 @@ USERSROUTER
             .catch(next)
     })
     .get((req, res) => {
-
         res.json(serialiseUser(res.user))
     })
     .patch(JSONPARSER, (req, res, next) => {

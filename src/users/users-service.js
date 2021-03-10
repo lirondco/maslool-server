@@ -1,4 +1,5 @@
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]+/
+const BCRYPT = require('bcryptjs')
 
 const USERSSERVICE = {
     getAll(db) {
@@ -59,6 +60,9 @@ const USERSSERVICE = {
         }
         return null
     },
+    hashPassword(password) {
+        return BCRYPT.hash(password, 12)
+    }
  }
 
  module.exports = USERSSERVICE;
