@@ -1,14 +1,13 @@
 const EXPRESS = require('express');
 const AUTHSERVICE = require('./auth-service');
 const { requireAuth } = require('../middleware/jwt-auth')
-const { checkBanned } = require('../middleware/basic-auth')
 
 const AUTHROUTER = EXPRESS.Router();
 const JSONBODYPARSER = EXPRESS.json();
 
 AUTHROUTER
     .route('/login')
-    .post(JSONBODYPARSER, checkBanned, (req, res, next) => {
+    .post(JSONBODYPARSER, (req, res, next) => {
      const { username, password } = req.body;
      const LOGINUSER = { username, password };
      
@@ -26,6 +25,11 @@ AUTHROUTER
             if (!dbUser)
                 return res.status(400).json({
                     error: 'Incorrect username or password',
+                })
+            
+            if (dbUser.banned === true)
+                return res.status(401).json({
+                    error: 'User is banned'
                 })
 
             return AUTHSERVICE.comparePasswords(LOGINUSER.password, dbUser.password)

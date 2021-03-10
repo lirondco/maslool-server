@@ -1,4 +1,4 @@
-const AuthService = require("../auth/auth-service");
+const AUTHSERVICE = require("../auth/auth-service");
 const ERROR = 'Unauthorised request'
 
 function requireAuth(req, res, next) {
@@ -14,9 +14,9 @@ function requireAuth(req, res, next) {
     }
 
     try {
-        const PAYLOAD = AuthService.verifyJwt(bearerToken)
+        const PAYLOAD = AUTHSERVICE.verifyJwt(bearerToken)
 
-        AuthService.getUserWithUserName(
+        AUTHSERVICE.getUserWithUserName(
             req.app.get('db'),
             PAYLOAD.sub,
         )
@@ -47,23 +47,6 @@ function requireAdmin(req, res, next) {
     return next()
  }
 
- function checkBanned(req, res, next) {
-    AUTHSERVICE.getUserWithUserName(
-        req.app.get('db'),
-        req.body.username
-    )
-    .then(user => {
-        if(user.banned === true) return res.status(401).json({
-            error: 'User is banned'
-        })
-    })
-    .catch(err => {
-        console.error(err)
-        next(err)
-    })
-    return next()
- }
-
  function requireOwner(req, res, next) {
     if (req.user.username !== 'liron') {
         return res.status(401).json({ error: ERROR })
@@ -75,7 +58,6 @@ function requireAdmin(req, res, next) {
  module.exports = {
      requireAuth,
      requireAdmin,
-     checkBanned,
      requireOwner
  }
 
