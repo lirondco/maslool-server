@@ -1,4 +1,4 @@
-  
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -192,7 +192,7 @@ function makeCommentsArray(users, trails) {
             content: 'Fourth test comment flagged!',
             last_modified: new Date('2029-01-22T16:28:32.615Z'),
             flagged: true,
-            flagged_by: users[0].id,
+            flagged_by: Number(users[0].id),
         },
         {
             id: 5,
@@ -225,7 +225,7 @@ function makeCommentsArray(users, trails) {
 }
 
 function makeRatingsArray(users, trails) {
-    [
+    return [
         {
             id: 1,
             trail_id: trails[0].id,
@@ -342,19 +342,19 @@ function makeExpectedTrail(trail, locations, comments = [], ratings = []) {
         rating_sum += rating_array[i].rating
     }
 
+    let average = rating_sum / number_of_ratings
     return {
         id: trail.id,
         name: trail.name,
-        date_published: trail.date_published,
+        date_published: trail.date_published.toISOString(),
         website: trail.website,
         description: trail.description,
         safety: trail.safety,
-        rating: rating_sum / number_of_ratings,
+        rating: Number(average.toFixed(1)),
         difficulty: trail.difficulty,
         number_of_comments,
         number_of_ratings,
         location: {
-            id: location.id,
             address_line: location.address_line,
             city: location.city,
             region: location.region,
@@ -372,17 +372,15 @@ function makeExpectedTrailComments(users, trailId, comments) {
         return {
             id: comment.id,
             content: comment.content,
-            trail_id: comment.trail_id,
-            last_modified: comment.last_modified,
+            last_modified: comment.last_modified.toISOString(),
             flagged: comment.flagged,
             flagged_by: comment.flagged_by,
             user: {
                 id: commentUser.id,
                 username: commentUser.username,
-                join_date: commentUser.join_date,
+                join_date: commentUser.join_date.toISOString(),
                 admin: commentUser.admin,
                 banned: commentUser.banned,
-                banned_by: commentUser.banned_by
             },
         }
     })
@@ -397,15 +395,13 @@ function makeExpectedTrailRatings(users, trailId, ratings) {
         return {
             id: rating.id,
             rating: rating.rating,
-            trail_id: rating.trail_id,
-            date_modified: rating.date_modified,
+            date_modified: rating.date_modified.toISOString(),
             user: {
                 id: ratingUser.id,
                 username: ratingUser.username,
-                join_date: ratingUser.join_date,
+                join_date: ratingUser.join_date.toISOString(),
                 admin: ratingUser.admin,
                 banned: ratingUser.banned,
-                banned_by: ratingUser.banned_by
             },
         }
     })
@@ -417,15 +413,24 @@ function makeMaliciousTrail() {
         name: 'Naughty naughty very naughty <script>alert("xss");</script>',
         date_published: new Date(),
         website: 'www.bad.net',
-        description:`Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+        description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
         safety: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
         difficulty: 'Beginner',
         rating: 0
     }
+
+    const maliciousLocations = {
+        id: 911,
+        trail_id: 911,
+        address_line: '123 street',
+        city: 'city',
+        region: 'region',
+        postal_code: '23456'
+    }
     const expectedTrail = {
-        ...makeExpectedTrail(trail),
+        ...makeExpectedTrail(maliciousTrail, [maliciousLocations]),
         name: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
-        description:`Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+        description: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
         safety: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
     }
 
@@ -442,7 +447,7 @@ function makeTrailsFixtures() {
     const testComments = makeCommentsArray(testUsers, testTrails)
     const testRatings = makeRatingsArray(testUsers, testTrails)
     const testPending = makePendingArray(testUsers)
-    return { testUsers, testTrails, testLocations, testComments, testRatings, testPending}
+    return { testUsers, testTrails, testLocations, testComments, testRatings, testPending }
 }
 
 function cleanTables(db) {
@@ -457,22 +462,22 @@ function cleanTables(db) {
                 pending
             `
         )
-        .then(() =>
-            Promise.all([
-                trx.raw(`ALTER SEQUENCE trails_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`ALTER SEQUENCE comments_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`ALTER SEQUENCE ratings_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`ALTER SEQUENCE locations_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`ALTER SEQUENCE pending_id_seq minvalue 0 START WITH 1`),
-                trx.raw(`SELECT setval('trails_id_seq', 0)`),
-                trx.raw(`SELECT setval('users_id_seq', 0)`),
-                trx.raw(`SELECT setval('comments_id_seq', 0)`),   
-                trx.raw(`SELECT setval('ratings_id_seq', 0)`),
-                trx.raw(`SELECT setval('locations_id_seq', 0)`),
-                trx.raw(`SELECT setval('pending_id_seq', 0)`),
-            ])
-        )
+            .then(() =>
+                Promise.all([
+                    trx.raw(`ALTER SEQUENCE trails_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE comments_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE ratings_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE locations_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE pending_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`SELECT setval('trails_id_seq', 0)`),
+                    trx.raw(`SELECT setval('users_id_seq', 0)`),
+                    trx.raw(`SELECT setval('comments_id_seq', 0)`),
+                    trx.raw(`SELECT setval('ratings_id_seq', 0)`),
+                    trx.raw(`SELECT setval('locations_id_seq', 0)`),
+                    trx.raw(`SELECT setval('pending_id_seq', 0)`),
+                ])
+            )
     )
 }
 
@@ -482,7 +487,7 @@ function seedUsers(db, users) {
         password: bcrypt.hashSync(user.password, 1)
     }))
     return db.into('users').insert(preppedUsers)
-        .then(() => 
+        .then(() =>
             db.raw(
                 `SELECT setval('users_id_seq', ?)`,
                 [users[users.length - 1].id]
@@ -490,7 +495,7 @@ function seedUsers(db, users) {
         )
 }
 
-function seedTrailsTables(db, users, trails, locations, comments=[], ratings=[]) {
+function seedTrailsTables(db, users, trails, locations, comments = [], ratings = []) {
     return db.transaction(async trx => {
         await seedUsers(trx, users)
         await trx.into('trails').insert(trails)
@@ -522,20 +527,23 @@ function seedTrailsTables(db, users, trails, locations, comments=[], ratings=[])
     })
 }
 
-function seedMaliciousTrail(db, trail) {
-    return db
-        .into('trails')
-        .insert([trail])
+function seedMaliciousTrail(db, user, trail) {
+    return seedUsers(db, [user])
+        .then(() =>
+            db
+                .into('trails')
+                .insert([trail])
+        )
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
-      subject: user.username,
-      algorithm: 'HS256',
+        subject: user.username,
+        algorithm: 'HS256',
     })
     return `Bearer ${token}`
-  }
-  
+}
+
 
 module.exports = {
     makeUsersArray,

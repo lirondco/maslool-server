@@ -154,7 +154,7 @@ const TRAILSSERVICE = {
             trail_id: comment.trail_id,
             last_modified: new Date(comment.last_modified),
             flagged: comment.flagged,
-            flagged_by: comment.flagged_by,
+            flagged_by: parseInt(comment.flagged_by),
             user: {
                 id: user.id,
                 username: user.username,
@@ -172,7 +172,7 @@ const TRAILSSERVICE = {
             id: rating.id,
             rating: Number(rating.rating),
             trail_id: rating.trail_id,
-            date_modified: new Date(rating.date_published),
+            date_modified: new Date(rating.date_modified),
             user: {
                 id: user.id,
                 username: user.username,

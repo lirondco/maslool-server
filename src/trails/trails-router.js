@@ -13,7 +13,7 @@ TRAILSROUTER
         TRAILSSERVICE.getAllTrails(req.app.get('db'))
             .then(trails => {
                 if (req.user.banned === true) {
-                    return res.status(400).json({
+                    return res.status(401).json({
                         error: `User is banned`
                     })
                 }
@@ -68,7 +68,7 @@ TRAILSROUTER
     .all(checkTrailExists)
     .get((req, res) => {
         if (req.user.banned === true) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: `User is banned`
             })
         }
@@ -131,7 +131,7 @@ TRAILSROUTER
     .all(checkTrailExists)
     .get((req, res, next) => {
         if (req.user.banned === true) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: `User is banned`
             })
         }
@@ -150,7 +150,7 @@ TRAILSROUTER.route('/:trail_id/ratings')
     .all(checkTrailExists)
     .get((req, res, next) => {
         if (req.user.banned === true) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: `User is banned`
             })
         }
