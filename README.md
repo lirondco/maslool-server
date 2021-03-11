@@ -4,6 +4,8 @@ BaseURL: https://still-journey-41951.herokuapp.com/api
 ## API Documentation &#x202b; תיעוד השרת <br />
 ### BaseURL/users
 
+---
+
 #### '/'
 GET - requires admin privileges / returns all users
     - if the user is neither logged in nor an admin, it will return a 401 unauthorised error. 
@@ -115,7 +117,7 @@ GET - retrieves specified pending message
 DELETE - deletes specified pending message
         - returns a 404 error if pending_id doesn't match that of any existing pending message
 
-## Technologies and languages used &#x202b; תכנולוגיות ושפות בשימוש
+## Technologies and languages used &#x202b; טכנולוגיות ושפות בשימוש
 
 * Javascript
 * PostgreSQL
