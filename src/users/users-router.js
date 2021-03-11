@@ -149,6 +149,7 @@ USERSROUTER
         }
 
         const PASSWORDERROR = USERSSERVICE.validatePassword(USERTOUPDATE.password)
+        const EMAILERROR = USERSSERVICE.validateEmail(USERTOUPDATE.email)
 
         if (PASSWORDERROR && USERTOUPDATE.password) {
             return res.status(400).json({
@@ -156,6 +157,11 @@ USERSROUTER
             })
         }
 
+        if (EMAILERROR && USERTOUPDATE.email) {
+            return res.status(400).json({
+                error: EMAILERROR
+            })
+        }
         return USERSSERVICE.updateUser(
             req.app.get('db'),
             req.params.user_id,
