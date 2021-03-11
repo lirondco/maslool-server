@@ -38,9 +38,17 @@ USERSROUTER
 
         const PASSWORDERROR = USERSSERVICE.validatePassword(password)
 
+        const EMAILERROR = USERSSERVICE.validatePassword(email)
+
         if (PASSWORDERROR) {
             return res.status(400).json({
                 error: PASSWORDERROR
+            })
+        }
+
+        if (EMAILERROR) {
+            return res.status(400).json({
+                error: EMAILERROR
             })
         }
 
