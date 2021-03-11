@@ -3,7 +3,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Comments Endpoints', function() {
+describe('Ratings Endpoints', function() {
     let db
 
     const {
@@ -28,8 +28,8 @@ describe('Comments Endpoints', function() {
 
     afterEach('cleanup', () => helpers.cleanTables(db))
 
-    describe(`POST /api/comments/:trail_id`, () => {
-        beforeEach('insert trails', () => 
+    describe(`POST /api/ratings/:trail_id`, () => {
+        beforeEach('insert articles', () => 
             helpers.seedTrailsTables(
                 db,
                 testUsers,
