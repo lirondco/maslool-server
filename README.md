@@ -31,7 +31,7 @@ PATCH - bans or unbans a user, requires admin privileges
 PATCH - enables or revokes a selected user's admin privileges. 
       - can only be done by the site owner.
 
-### BASEURL/auth
+### BaseURL/auth
 #### '/login'
 POST - gets the user an authorisation token if the username and password are correct.
      - gives a 401 unauthorised error if the user is banned.
@@ -39,7 +39,7 @@ POST - gets the user an authorisation token if the username and password are cor
 #### '/refresh'
 POST - gives the user a new authorisation token when they're logged in.
 
-#### BASEURL/trails - Authorisation required
+#### BaseURL/trails - Authorisation required
 #### '/'
 GET - returns all trails
 
