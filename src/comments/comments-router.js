@@ -16,11 +16,11 @@ COMMENTSROUTER
 
         NEWCOMMENT.trail_id = req.params.trail_id
 
-        for (const [key, value] of Object.entries(NEWCOMMENT))
-            if (value === null)
-                return res.status(400).json({
-                    error: `Missing ${key} in request body`
-                })
+        if (!req.body.content || req.body.content === null)
+            return res.status(400).json({
+                error: `Missing content in request body`
+            })
+
         if (req.user.banned === true) {
             return res.status(401).json({
                 error: `User is banned`
@@ -154,14 +154,14 @@ COMMENTSROUTER
     .patch(JSONBODYPARSER, (res, req, next) => {
         const { flagged, flagged_by } = req.comment
         const FLAGGEDFIELDS = { flagged, flagged_by }
-        if(req.req.user.banned === true) {
+        if (req.req.user.banned === true) {
             return res.res.status(401).json({
                 error: `User is banned`
             })
         }
 
-        if(res.res.comment.flagged === false) {
-            if(req.req.user.id === res.res.comment.user.id) {
+        if (res.res.comment.flagged === false) {
+            if (req.req.user.id === res.res.comment.user.id) {
                 return res.res.status(400).json({
                     error: `User cannot flag own comment`
                 })
@@ -169,9 +169,9 @@ COMMENTSROUTER
             FLAGGEDFIELDS.flagged = true
             FLAGGEDFIELDS.flagged_by = req.req.user.username
         }
-        
-        if(res.res.comment.flagged === true) {
-            if(req.req.user.admin === false) {
+
+        if (res.res.comment.flagged === true) {
+            if (req.req.user.admin === false) {
                 return res.res.status(401).json({
                     error: `Only an admin can unflag a comment`
                 })
@@ -179,16 +179,16 @@ COMMENTSROUTER
             FLAGGEDFIELDS.flagged = false
             FLAGGEDFIELDS.flagged_by = null
         }
-        
+
         COMMENTSSERVICE.updateComment(
             req.app.get('db'),
             req.req.params.comment_id,
             FLAGGEDFIELDS
         )
-         .then(() => {
-             res.res.status(201).json({ message: 'success'})
-         })
-         .catch(next)
+            .then(() => {
+                res.res.status(201).json({ message: 'success' })
+            })
+            .catch(next)
     })
 
 module.exports = COMMENTSROUTER

@@ -33,10 +33,9 @@ RATINGSROUTER
         const NEWRATING = { rating }
 
 
-        for (const [key, value] of Object.entries(NEWRATING))
-            if (value == null)
-                return res.status(400).json({
-                    error: `Missing ${key} in request body`
+        if (!req.body.rating || req.body.rating === null)
+            return res.status(400).json({
+                    error: `Missing content in request body`
                 })
 
         if (req.user.banned === true)
