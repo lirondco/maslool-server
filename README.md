@@ -4,8 +4,6 @@ BaseURL: https://still-journey-41951.herokuapp.com/api
 ## API Documentation &#x202b; תיעוד השרת <br />
 ### BaseURL/users
 
----
-
 #### '/'
 GET - requires admin privileges / returns all users
     - if the user is neither logged in nor an admin, it will return a 401 unauthorised error. 
