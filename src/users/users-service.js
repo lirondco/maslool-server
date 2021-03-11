@@ -69,11 +69,12 @@ const USERSSERVICE = {
     },
 
     validateEmail(mail) {
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(myForm.emailAddr.value)) {
-            return 'You have entered an invalid email address'
+        if (mail.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) 
+        {
+            return null
         }
 
-        return null
+        return 'You have entered an invalid email address'
     },
 
     hashPassword(password) {
