@@ -1,9 +1,7 @@
-# Maslool App Server &#x202b; שרת של האתר ״מסלול״ 
-<br />
-BaseURL: https://still-journey-41951.herokuapp.com/api
+# Maslool App Server &#x202b; שרת של האתר ״מסלול״ <br />
+BaseURL: https://still-journey-41951.herokuapp.com/api 
 
-## API Documentation &#x202b; תיעוד השרת
-<br />
+## API Documentation &#x202b; תיעוד השרת <br />
 ### BaseURL/users
 
 #### '/'
