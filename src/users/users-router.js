@@ -95,7 +95,6 @@ USERSROUTER
 USERSROUTER
     .route('/:user_id')
     .all(requireAuth)
-    .all(requireAdmin)
     .all((req, res, next) => {
         USERSSERVICE.getById(
             req.app.get('db'),
@@ -113,6 +112,10 @@ USERSROUTER
             .catch(next)
     })
     .get((req, res) => {
+        if (req.user.id !== res.user.id && req.user.admin === false)
+            return res.status(401).json({
+                error: `User data can only be accessed by user or admin`
+            })
         res.json(serialiseUser(res.user))
     })
     .patch(JSONPARSER, (req, res, next) => {
@@ -126,9 +129,9 @@ USERSROUTER
                 error: "Request body must contain either email, password, or username"
             })
 
-        if (res.user.id !== req.user.id)
+        if (res.user.id !== req.user.id && req.user.admin === false)
             return res.status(400).json({
-                error: 'User can only be updated by self'
+                error: 'User can only be updated by self or by admin'
             })
 
         if (req.user.banned === true) {
