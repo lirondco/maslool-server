@@ -21,7 +21,7 @@ PENDINGROUTER
         const { message } = req.body;
         const NEWPENDING = { message }
 
-        if (!req.body.message)
+        if (!req.body.message || req.body.message ===  null)
             return res.status(400).json({
                 error: `Missing message in request body`
             })

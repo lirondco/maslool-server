@@ -299,7 +299,7 @@ function makeRatingsArray(users, trails) {
 }
 
 function makePendingArray(users) {
-    [
+    return [
         {
             id: 1,
             message: 'Neutra taxidermy VHS, vape stumptown lumbersexual af biodiesel raw denim cloud bread cronut mumblecore. Kitsch hoodie pug, deep v pickled drinking vinegar dreamcatcher brunch bitters. Meh letterpress trust fund tilde biodiesel offal man braid plaid chicharrones fashion axe kickstarter subway tile adaptogen kinfolk.',
@@ -495,6 +495,19 @@ function seedUsers(db, users) {
         )
 }
 
+function seedPending(db, pending) {
+    const preppedPending = pending.map(pdg => ({
+        ...pdg
+    }))
+    return db.into('pending').insert(preppedPending)
+        .then(() => 
+            db.raw(
+                `SELECT setval('pending_id_seq', ?)`,
+                [pending[pending.length-1].id]
+            )
+        )
+}
+
 function seedTrailsTables(db, users, trails, locations, comments = [], ratings = []) {
     return db.transaction(async trx => {
         await seedUsers(trx, users)
@@ -562,4 +575,5 @@ module.exports = {
     seedMaliciousTrail,
     makeAuthHeader,
     seedUsers,
+    seedPending
 }
