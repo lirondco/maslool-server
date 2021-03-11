@@ -14,4 +14,7 @@ GET - requires admin privileges / returns all users
 POST - registers new user
     - required: { username, password, email }
     - Password must contain at least one upper case, lower case, number, and special characters, be more than 8 characters and less than 72 characters long, and have no spaces at the beginning or at the end.
+    - Email needs to be in a valid email format.
+
+
 
