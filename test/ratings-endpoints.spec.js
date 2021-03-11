@@ -29,40 +29,51 @@ describe('Ratings Endpoints', function() {
     afterEach('cleanup', () => helpers.cleanTables(db))
 
     describe(`POST /api/ratings/:trail_id`, () => {
-        beforeEach('insert articles', () => 
+        beforeEach('insert trails', () => 
             helpers.seedTrailsTables(
                 db,
                 testUsers,
                 testTrails,
                 testLocations,
-                testComments[0],
+                testComments,
                 testRatings
             )
         )
 
-        it(`creates an comment, responding with 201 and the new comment`, function() {
+        const testTrail = testTrails[0]
+        const trailId = testTrail.id
+        const testRepeatUser = testUsers[0]
+        const testNewUser = testUsers[3]
+        const newRating = {
+            rating: 4
+        }
+
+        it(`user rates again, responding with 400 and an error message`, function() {
             this.retries(3)
-            const testTrail = testTrails[0]
-            const trailId = testTrail.id
-            const testUser = testUsers[0]
-            const newComment = {
-                content: 'Test new comment'
-            }
+
             return supertest(app)
-                .post(`/api/comments/${trailId}`)
-                .set('Authorization', helpers.makeAuthHeader(testUser))
-                .send(newComment)
+                .post(`/api/ratings/${trailId}`)
+                .set('Authorization', helpers.makeAuthHeader(testRepeatUser))
+                .send(newRating)
+                .expect(400, { error: 'User can only rate once' })
+        })
+
+        it(`new user rates, responding with 201`, function() {
+            this.retries(3)
+
+            return supertest(app)
+                .post(`/api/ratings/${trailId}`)
+                .set('Authorization', helpers.makeAuthHeader(testNewUser))
+                .send(newRating)
                 .expect(201)
         })
 
-        it(`responds with 400 and an error message when there's no content`, () => {
+        it(`responds with 400 and an error message when there's no rating`, () => {
             this.retries(3)
-            const testTrail = testTrails[0]
-            const trailId = testTrail.id
-            const testUser = testUsers[0]
+
             return supertest(app)
-                .post(`/api/comments/${trailId}`)
-                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .post(`/api/ratings/${trailId}`)
+                .set('Authorization', helpers.makeAuthHeader(testNewUser))
                 .send('')
                 .expect(400, {
                     error: 'Missing content in request body'
