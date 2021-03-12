@@ -40,7 +40,7 @@ AUTHROUTER
                         })
 
                     const SUB = dbUser.username
-                    const PAYLOAD = { user_id: dbUser.id }
+                    const PAYLOAD = { user_id: dbUser.id, admin: dbUser.admin }
                     res.send({
                         authToken: AUTHSERVICE.createJwt(SUB, PAYLOAD),
                     })
