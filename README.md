@@ -41,7 +41,13 @@ POST - gives the user a new authorisation token when they're logged in.
 
 #### BaseURL/trails - Authorisation required
 #### '/'
-GET - returns all trails
+GET - returns all trails or filter trails based on your search criteria
+
+Possible Search Queries: name, rating, region, difficulty
+
+Format: 'BaseURL/trails?{query=value}'
+
+To search under multiple criteria, just add a '&' between your queries.
 
 POST - admin privileges required
      - requires { name, website, description, difficulty (one of Beginner, Intermediate, Advanced), location }

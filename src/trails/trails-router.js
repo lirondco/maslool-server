@@ -10,14 +10,52 @@ TRAILSROUTER
     .route('/')
     .all(requireAuth)
     .get((req, res, next) => {
+        const { region, name, difficulty, rating } = req.query
+        const req_diff = ['beginner', 'intermediate', 'advanced']
+        if (difficulty && !req_diff.includes(difficulty.toLowerCase())) {
+            return res.status(400).json({ error: 'Diffifuclty must have one of Beginner, Intermediate, or Advanced' })
+        }
         TRAILSSERVICE.getAllTrails(req.app.get('db'))
             .then(trails => {
+                let response = [...trails]
                 if (req.user.banned === true) {
                     return res.status(401).json({
                         error: `User is banned`
                     })
                 }
-                res.json(trails.map(TRAILSSERVICE.serialiseTrail))
+
+                if (region) {
+                    response = response.filter(trail => 
+                        trail.location.region.toLowerCase().includes(region.toLowerCase())
+                        )
+                }
+
+                if (name) {
+                    response = response.filter(trail => 
+                        trail.name.toLowerCase().includes(name.toLowerCase())
+                        )
+                }
+
+                if (difficulty) {
+                    response = response.filter(trail =>
+                        trail.difficulty.toLowerCase().includes(difficulty.toLowerCase())
+                        )
+                }
+
+                if (rating) {
+                    let searchRating = Number(rating)
+                    if(Number.isNaN(searchRating)) {
+                        return res.status(400).json({ error: 'Rating needs to be a number' })
+                    }
+                    response = response.filter(trail => 
+                        Number(trail.rating) >= searchRating
+                        )
+                }
+                
+                if (response.length === 0) {
+                    return res.status(404).json({ error: 'Sorry, we do not have any trail matching that criteria. We are currently expanding our database and if you have any good suggestion, please do not hesitate to contact an admin.' })
+                }
+                res.json(response.map(TRAILSSERVICE.serialiseTrail))
             })
             .catch(next)
     })
