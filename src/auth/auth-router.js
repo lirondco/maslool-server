@@ -48,8 +48,7 @@ AUTHROUTER
         })
         .catch(next)
  })
-
-AUTHROUTER.post('/refresh', requireAuth, (req, res) => {
+.put(requireAuth, (req, res) => {
     const SUB = req.user.username
     const PAYLOAD = { user_id: req.user.id, admin: req.user.admin }
     res.send({
