@@ -51,7 +51,7 @@ AUTHROUTER
 
 AUTHROUTER.post('/refresh', requireAuth, (req, res) => {
     const SUB = req.user.username
-    const PAYLOAD = { user_id: req.user.id }
+    const PAYLOAD = { user_id: req.user.id, admin: req.user.admin }
     res.send({
         authToken: AUTHSERVICE.createJwt(SUB, PAYLOAD)
     })
