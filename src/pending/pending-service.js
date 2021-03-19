@@ -59,6 +59,7 @@ const PENDINGSERVICE = {
             user: {
                 id: user.id,
                 username: user.username,
+                email: user.email,
                 join_date: new Date(user.join_date),
                 admin: user.admin,
                 banned: user.banned,
