@@ -155,7 +155,7 @@ describe('Users Endpoints', function() {
                     .expect(res => {
                         expect(res.body).to.have.property('id')
                         expect(res.body.username).to.eql(newUser.username)
-                        expect(res.body.email).to.eql('')
+                        expect(res.body.email).to.eql('test@email.net')
                         expect(res.body.admin).to.eql(false)
                         expect(res.body.banned).to.eql(false)
                         expect(res.body.banned_by).to.eql(null)

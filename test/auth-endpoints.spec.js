@@ -78,10 +78,9 @@ describe('Auth endpoints', function () {
         it(`responds 200 and JWT auth token using secret when valid credentials`, () => {
             const uservalidCreds = {
                 username: testUser.username,
-                password: testUser.password
-            }
+                password: testUser.password            }
             const expectedToken = jwt.sign(
-                { user_id: testUser.id },
+                { user_id: testUser.id, admin: testUser.admin },
                 process.env.JWT_SECRET,
                 {
                     subject: testUser.username,

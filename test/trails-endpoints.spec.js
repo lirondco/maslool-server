@@ -49,7 +49,7 @@ describe('Trails Endpoints', function () {
                 return supertest(app)
                     .get('/api/trails')
                     .set('Authorization', helpers.makeAuthHeader(testUser))
-                    .expect(200, [])
+                    .expect(404, { error: 'Sorry, we do not have any trail matching that criteria. We are currently expanding our database and if you have any good suggestion, please do not hesitate to contact an admin.' })
             })
         })
 
