@@ -15,6 +15,7 @@ const PENDINGSERVICE = {
                                     usr.id,
                                     usr.username,
                                     usr.join_date,
+                                    usr.email,
                                     usr.admin,
                                     usr.banned,
                                     usr.banned_by
