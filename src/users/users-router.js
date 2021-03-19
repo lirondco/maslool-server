@@ -9,7 +9,7 @@ const JSONPARSER = EXPRESS.json()
 
 const serialiseUser = user => ({
     id: user.id,
-    email: XSS(user.fullname),
+    email: XSS(user.email),
     username: XSS(user.username),
     join_date: user.join_date,
     admin: user.admin,
