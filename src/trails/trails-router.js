@@ -26,8 +26,7 @@ TRAILSROUTER
 
                 if (region) {
                     response = response.filter(trail => 
-                        trail.location.region.replace(/\s/g, '').toLowerCase().includes(region.replace(/\s/g, '').toLowerCase())
-                        )
+                        trail.location.region.toLowerCase() === region.toLowerCase())
                 }
 
                 if (name) {
